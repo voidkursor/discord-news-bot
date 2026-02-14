@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Discord News Bot
 
 A Discord bot that fetches and posts news from various categories.
@@ -53,3 +54,6 @@ python bot.py
 
 - **Render**: Push to GitHub, connect to Render, set env vars
 - **Replit**: Create repl, add secrets, run always on
+=======
+# discord-news-bot
+>>>>>>> 767d6be57a1a754a2ebe97304ff962a32729a48c
