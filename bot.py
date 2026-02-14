@@ -47,14 +47,14 @@ async def daily_news():
 
 async def post_gaming_news(channel):
     try:
-        url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&category={news_category}&country=in'
-	response = requests.get(url)
-	data = response.json()
+        url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&category=technology&country=in'
+        response = requests.get(url)
+        data = response.json()
         
         if data.get('status') != 'success':
-    		await ctx.send(f"Error: {data.get('message', 'Unknown error')}")
-   		 return
-	articles = data.get('results', [])[:5]
+            return
+        
+        articles = data.get('results', [])[:5]
         
         if not articles:
             return
