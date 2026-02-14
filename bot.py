@@ -21,7 +21,8 @@ CATEGORIES = {
     'business': 'business',
     'science': 'science',
     'sports': 'sports',
-    'entertainment': 'entertainment'
+    'entertainment': 'entertainment',
+    'general': 'top'
 }
 
 @bot.event
@@ -46,14 +47,14 @@ async def daily_news():
 
 async def post_gaming_news(channel):
     try:
-        url = f'https://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey={NEWS_API_KEY}'
+        url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&category=technology&country=in'
         response = requests.get(url)
         data = response.json()
         
-        if data.get('status') == 'error':
+        if data.get('status') != 'success':
             return
         
-        articles = data.get('articles', [])[:5]
+        articles = data.get('results', [])[:5]
         
         if not articles:
             return
@@ -69,7 +70,7 @@ async def post_gaming_news(channel):
             desc = article.get('description', 'No description')
             url = article.get('url', '')
             
-            if title and title != '[Removed]':
+            if title:
                 embed.add_field(
                     name=f"{i}. {title[:100]}",
                     value=f"{desc[:150]}... [Read more]({url})" if desc else f"[Read more]({url})",
@@ -88,20 +89,20 @@ async def setchannel(ctx):
     await ctx.send(f"✅ Daily news will be posted in this channel ({ctx.channel.mention}) at 6 AM!")
 
 @bot.command()
-async def news(ctx, category='general', *, country='us'):
+async def news(ctx, category='general', *, country='in'):
     category = category.lower()
-    news_category = CATEGORIES.get(category, 'general')
+    news_category = CATEGORIES.get(category, 'top')
     
     try:
-        url = f'https://newsapi.org/v2/top-headlines?country=us&category={news_category}&apiKey={NEWS_API_KEY}'
+        url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&category={news_category}&country=in'
         response = requests.get(url)
         data = response.json()
         
-        if data.get('status') == 'error':
+        if data.get('status') != 'success':
             await ctx.send(f"Error: {data.get('message', 'Unknown error')}")
             return
         
-        articles = data.get('articles', [])[:5]
+        articles = data.get('results', [])[:5]
         
         if not articles:
             await ctx.send(f"No news found for {category}")
@@ -118,7 +119,7 @@ async def news(ctx, category='general', *, country='us'):
             desc = article.get('description', 'No description')
             url = article.get('url', '')
             
-            if title and title != '[Removed]':
+            if title:
                 embed.add_field(
                     name=f"{i}. {title[:100]}",
                     value=f"{desc[:150]}... [Read more]({url})" if desc else f"[Read more]({url})",
