@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Discord News Bot
 
 A Discord bot that fetches and posts news from various categories.
@@ -20,7 +19,7 @@ pip install -r requirements.txt
    - Enable "Message Content Intent" in Bot settings
 
 4. **Get News API Key (free):**
-   - Go to https://newsapi.org/register
+   - Go to https://newsdata.io
    - Register for free account
    - Copy your API key
 
@@ -28,6 +27,7 @@ pip install -r requirements.txt
 ```bash
 export DISCORD_BOT_TOKEN="your_discord_token_here"
 export NEWS_API_KEY="your_news_api_key_here"
+export CHANNEL_ID="your_channel_id_here"
 ```
 
 6. **Run the bot:**
@@ -48,12 +48,10 @@ python bot.py
 - `!news sports` - Get sports news
 - `!news business` - Get business news
 - `!news science` - Get science news
+- `!setchannel` - Set channel for daily news posting (6 AM)
 - `!helpnews` - Show help
 
 ## Deploy for Free
 
 - **Render**: Push to GitHub, connect to Render, set env vars
 - **Replit**: Create repl, add secrets, run always on
-=======
-# discord-news-bot
->>>>>>> 767d6be57a1a754a2ebe97304ff962a32729a48c

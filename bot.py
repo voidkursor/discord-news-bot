@@ -4,6 +4,10 @@ import requests
 import os
 from datetime import datetime
 import asyncio
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -42,8 +46,8 @@ async def daily_news():
                 channel = bot.get_channel(int(channel_id))
                 if channel:
                     await post_gaming_news(channel)
-            except:
-                pass
+            except Exception as e:
+                logger.error(f"Error posting daily news: {e}")
 
 async def post_gaming_news(channel):
     try:
@@ -80,13 +84,14 @@ async def post_gaming_news(channel):
         await channel.send(embed=embed)
         
     except Exception as e:
-        pass
+        logger.error(f"Error fetching gaming news: {e}")
 
 @bot.command()
 async def setchannel(ctx):
     """Set the channel for daily news posting"""
     os.environ['CHANNEL_ID'] = str(ctx.channel.id)
-    await ctx.send(f"✅ Daily news will be posted in this channel ({ctx.channel.mention}) at 6 AM!")
+    await ctx.send(f"✅ Daily news will be posted in this channel ({ctx.channel.mention}) at 6 AM!\n"
+                   f"⚠️ Note: Set CHANNEL_ID environment variable for persistent configuration.")
 
 @bot.command()
 async def news(ctx, category='general', *, country='in'):
@@ -161,6 +166,24 @@ async def morningnews(ctx):
     await post_gaming_news(ctx.channel)
 
 if __name__ == '__main__':
+    import threading
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    
+    class HealthCheckHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'OK')
+        def log_message(self, format, *args):
+            pass
+    
+    def run_server():
+        port = int(os.getenv('PORT', 5000))
+        server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+        server.serve_forever()
+    
+    threading.Thread(target=run_server, daemon=True).start()
+    
     TOKEN = os.getenv('DISCORD_BOT_TOKEN')
     if not TOKEN:
         print("Error: DISCORD_BOT_TOKEN not set in environment variables")
